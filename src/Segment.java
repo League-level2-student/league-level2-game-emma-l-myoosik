@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Segment {
-	int answerList[];
+	static int answerList[];
 //	ArrayList<Integer> numSequence;
 	ArrayList<Integer> userInputs;
 	
@@ -45,5 +45,10 @@ public class Segment {
 		int position = userInputs.size() - 1;
 		
 		return answerList[position] == num;
+	}
+	
+	public static void main(String[] args) {
+		Segment segment = new Segment();
+		
 	}
 }

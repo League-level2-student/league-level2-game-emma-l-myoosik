@@ -46,8 +46,8 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		pressEnter = new Font("Courier", Font.PLAIN, 20);
 		instructions = new Font("Verdana", Font.PLAIN, 14);
 		
-		frameDraw = new Timer(1000/60, this);
-		frameDraw.start();
+//		frameDraw = new Timer(1000/60, this);
+//		frameDraw.start();
 		
 		if (needImage) {
 		    loadImage ("soothingbackground.jpg");
@@ -131,6 +131,10 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		g.setFont(pressEnter);
 		g.setColor(Color.WHITE);
 		g.drawString("Click ENTER to BEGIN", Simon.WIDTH/2, Simon.HEIGHT/5);
+		
+		g.setFont(pressEnter);
+		g.setColor(Color.WHITE);
+		g.drawString("Click SPACE KEY to view INSTRUCTIONS", Simon.WIDTH/3, Simon.HEIGHT/4);
 	}
 	
 	void drawInstructionPage(Graphics g) {
@@ -144,12 +148,21 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	}
 	
 	void drawGamePage(Graphics g) {
-		if (gotImage) {
-			g.drawImage(image, 0, 0, Simon.WIDTH, Simon.HEIGHT, null);
-		} else {
-			g.setColor(Color.BLUE);
-			g.fillRect(0, 0, Simon.WIDTH, Simon.HEIGHT);
+//		if (gotImage) {
+//			g.drawImage(image, 0, 0, Simon.WIDTH, Simon.HEIGHT, null);
+//		} else {
+//			g.setColor(Color.BLUE);
+//			g.fillRect(0, 0, Simon.WIDTH, Simon.HEIGHT);
+//		}
+		
+		for (int i = 0; i < Segment.answerList.length; i++) {
+			System.out.println(Segment.answerList[i]);
 		}
+		
+		pink.addActionListener(this);
+		blue.addActionListener(this);
+		yellow.addActionListener(this);
+		green.addActionListener(this);
 
 	}
 	
@@ -168,8 +181,20 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		repaint();
 		
 		JButton buttonPressed = (JButton) e.getSource();
+		if (buttonPressed == pink) {
+			buttonclicked = Segment.PINK;
+			System.out.println("pink");
+		} else if (buttonPressed == blue) {
+			buttonclicked = Segment.BLUE;
+			System.out.println("blue");
+		} else if (buttonPressed == yellow) {
+			buttonclicked = Segment.YELLOW;
+			System.out.println("yellow");
+		} else if (buttonPressed == green) {
+			buttonclicked = Segment.GREEN;
+			System.out.println("green");
+		}
 		
-		//segment.userInput(buttonclicked);
 	}
 
 	@Override
