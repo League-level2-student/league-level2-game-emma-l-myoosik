@@ -1,54 +1,23 @@
 import java.util.ArrayList;
-import java.util.Random;
 
 public class Segment {
-	static int answerList[];
-//	ArrayList<Integer> numSequence;
-	ArrayList<Integer> userInputs;
+	private ArrayList<Integer> answerSequence = new ArrayList<Integer>();
+	private ArrayList<Integer> userSequence = new ArrayList<Integer>();
 	
-	static final int PINK = 0;
-	static final int BLUE = 1;
-	static final int YELLOW = 2;
-	static final int GREEN = 3;
-	
-	Random rand = new Random();
-	
-	int numTimes = 1;
-	
-	Segment(){
-//		numSequence = new ArrayList<Integer>();
-//		numSequence.add(rand.nextInt(3));
-		answerList = new int[numTimes];
-		createAnswerSequence();
-	}
-	
-	public void createAnswerSequence(){
-		for (int i = 0; i < numTimes; i++) {
-			answerList[i] = rand.nextInt(3);
+	Segment(ArrayList<Integer> answerSequence){
+		this.answerSequence = answerSequence;
+		for (int i = 0; i < answerSequence.size(); i++) {
+			System.out.print(answerSequence.get(i) + " ");
 		}
 	}
-	
-//	public void addIncreaseSequence() {
-//		numSequence.add(rand.nextInt(3));
-//	}
-	
-	public void reset() {
-		numTimes ++;
-		answerList = new int[numTimes];
-		createAnswerSequence();
-//		numSequence = new ArrayList<Integer>();
-//		addIncreaseSequence();
-	}
+
 	
 	public boolean userInput(int num) {
-		userInputs.add(num);
-		int position = userInputs.size() - 1;
+		userSequence.add(num);
+		int position = userSequence.size() - 1;
 		
-		return answerList[position] == num;
-	}
-	
-	public static void main(String[] args) {
-		Segment segment = new Segment();
 		
+		
+		return answerSequence.get(position) == num;
 	}
 }
