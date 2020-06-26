@@ -35,12 +35,12 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	
 	int currentPage = START;
 	int sequenceIndex = 0;
+	int buttonclicked;
+	int numInSequence = 2;
 	
 	Timer betweenButtons = new Timer(500, this);
 	
-	int buttonclicked;
-	
-	ArrayList<Integer> sequence = new ArrayList<Integer>();
+	static ArrayList<Integer> sequence = new ArrayList<Integer>();
 	ArrayList<Boolean> numCorrect = new ArrayList<Boolean>();
 	
 	Segment segment = new Segment(sequence);
@@ -218,8 +218,10 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		green.setVisible(true);
 	}
 	
-	void createSequence() {
-		sequence.add(rand.nextInt(4));
+	void createSequence(int num) {
+		for (int i = 0; i < num; i++) {
+			sequence.add(rand.nextInt(4));
+		}
 	}
 	
 	void displaySquare(int i) {
@@ -230,8 +232,10 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			blue.setVisible(true);
 		} else if (sequence.get(i) == 2) {
 			yellow.setVisible(true);
+			//sequence.add(2);
 		} else if (sequence.get(i) == 3) {
 			green.setVisible(true);
+			//sequence.add(3);
 		}
 		
 		sequenceIndex++; 
@@ -253,10 +257,11 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			betweenButtons.stop();
 			sequenceIndex = 0;
 			makeButtonsVisible();
+			numInSequence++;
 			control.setText("Your turn!");
-			for (int i = 0; i < sequence.size(); i++) {
-				System.out.println(sequence.get(i));
-			}
+//			for (int i = 0; i < sequence.size(); i++) {
+//				System.out.println(sequence.get(i));
+//			}
 		} else {
 			if (pause) {
 				makeButtonsInvisible();
@@ -313,36 +318,34 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		if (e.getSource() == control){
 			if (control.getText().equals("Ready to play?")) {
 				control.setText("...playing");
-				createSequence();
+				createSequence(numInSequence);
 				betweenButtons.start();
 			} 
 		} 
 		
 		// for some reason it still allows me to click buttons, but doesn't appear to add anything to the list
-		for (int i = 0; i < sequence.size(); i++) {
-			boolean isCorrect = true;
-			if (e.getSource() == pink) {
-				isCorrect = segment.userInput(0);
-				System.out.println("pink");
-			} else if (e.getSource() == blue) {
-				isCorrect = segment.userInput(1);
-				System.out.println("blue");
-			} else if (e.getSource() == yellow) {
-				isCorrect = segment.userInput(2);
-				System.out.println("yellow");
-			} else if (e.getSource() == green) {
-				isCorrect = segment.userInput(3);
-				System.out.println("green");
-			}
-			
-			if(!isCorrect) {
-				control.setText("You f*cked up");
-				sequence.clear();
-				break;
-			} else {
-				numCorrect.add(isCorrect);
-			}
+		boolean isCorrect = true;
+		if (e.getSource() == pink) {
+			isCorrect = segment.userInput(0);
+			System.out.println("pink");
+		} else if (e.getSource() == blue) {
+			isCorrect = segment.userInput(1);
+			System.out.println("blue");
+		} else if (e.getSource() == yellow) {
+			isCorrect = segment.userInput(2);				
+			System.out.println("yellow");
+		} else if (e.getSource() == green) {
+			isCorrect = segment.userInput(3);
+			System.out.println("green");
 		}
+			
+		if(!isCorrect) {
+			control.setText("You f*cked up");
+			sequence.clear();
+		} else {
+			numCorrect.add(isCorrect);
+		}
+		
 	}
 
 	@Override
