@@ -37,6 +37,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	int currentPage = START;
 	int sequenceIndex = 0;
 	int buttonclicked;
+	int numRounds = 0;
 	
 	Timer betweenButtons = new Timer(500, this);
 	
@@ -182,8 +183,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		JOptionPane.showMessageDialog(null, "Instructions: \n" + "The premise of Simon is very simple; all it requires is your brain. "
 				+ "You will be shown a pattern of different colored squares (either pink, blue, yellow, or green),\nand it is the player's job "
 				+ "to enter the correct sequence by clicking the differnet colored-buttons in the order that they appeared." + " Every time "
-				+ "you answer correctly\n, the sequence will add one new square to the sequence; you'll keep going until you mess up--the game will "
-				+ "end once that happens.");
+				+ "you answer correctly, \nthe sequence will add one new square to the sequence; you'll keep going until you mess up--the game will "
+				+ "end once that happens. To start each round, press \nthe white button that say 'Ready to play?' Good luck.");
 		
 		currentPage = GAME;
 		
@@ -201,7 +202,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		if (gotImage) {
 			g.drawImage(image, 0, 0, Simon.WIDTH, Simon.HEIGHT, null);
 		} else {
-			g.setColor(Color.BLUE);
+			g.setColor(Color.BLACK);
 			g.fillRect(0, 0, Simon.WIDTH, Simon.HEIGHT);
 		}
 		
@@ -227,7 +228,11 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		
 		g.setFont(pressEnter);
 		g.setColor(Color.WHITE);
-		g.drawString("Click ENTER to RESTART", Simon.WIDTH/2, Simon.HEIGHT/5);
+		g.drawString("You passed: " + numRounds + " rounds", Simon.WIDTH/2, Simon.HEIGHT/5);
+		
+		g.setFont(pressEnter);
+		g.setColor(Color.WHITE);
+		g.drawString("Press ENTER to RESTART", Simon.WIDTH/2, Simon.HEIGHT/5 + 25);
 		
 	}
 	
@@ -357,16 +362,12 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 				}
 			}  else if (clicked == pink) {
 				isCorrect = segment.userInput(0);
-				System.out.println("pink");
 			} else if (clicked == blue) {
 				isCorrect = segment.userInput(1);
-				System.out.println("blue");
 			} else if (clicked == yellow) {
-				isCorrect = segment.userInput(2);				
-				System.out.println("yellow");
+				isCorrect = segment.userInput(2);
 			} else if (clicked == green) {
 				isCorrect = segment.userInput(3);
-				System.out.println("green");
 			}
 				
 			if(!isCorrect) {
@@ -379,6 +380,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 				if (sequence.size() == segment.getUserSequence().size()) {
 					addToSequence();
 					segment.resetUserSequence();
+					numRounds++;
 					control.setText("Ready to play?");
 				}
 			}
