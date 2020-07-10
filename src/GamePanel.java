@@ -16,8 +16,6 @@ import javax.imageio.ImageIO;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
@@ -182,9 +180,9 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		}
 		
 		JOptionPane.showMessageDialog(null, "Instructions: \n" + "The premise of Simon is very simple; all it requires is your brain. "
-				+ "You will be shown a pattern of different colored squares (either pink, blue, yellow, or green),\n and it is the player's job "
-				+ "to enter the correct sequence by clicking the differnet colored-buttons in the order that they appeared.\n" + "Every time "
-				+ "you answer correctly, the sequence will add one nuew square to the sequence; you'll keep going until you mess up--the game will "
+				+ "You will be shown a pattern of different colored squares (either pink, blue, yellow, or green),\nand it is the player's job "
+				+ "to enter the correct sequence by clicking the differnet colored-buttons in the order that they appeared." + " Every time "
+				+ "you answer correctly\n, the sequence will add one new square to the sequence; you'll keep going until you mess up--the game will "
 				+ "end once that happens.");
 		
 		currentPage = GAME;
