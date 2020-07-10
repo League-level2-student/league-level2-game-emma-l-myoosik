@@ -14,7 +14,10 @@ import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
@@ -36,14 +39,12 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	int currentPage = START;
 	int sequenceIndex = 0;
 	int buttonclicked;
-	int numInSequence = 2;
 	
 	Timer betweenButtons = new Timer(500, this);
 	
 	static ArrayList<Integer> sequence = new ArrayList<Integer>();
-	ArrayList<Boolean> numCorrect = new ArrayList<Boolean>();
 	
-	Segment segment = new Segment(sequence);
+	Segment segment = new Segment();
 	
 	JLabel pink = new JLabel();
 	JLabel blue = new JLabel();
@@ -52,6 +53,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	JLabel control = new JLabel("Ready to play?");
 	
 	Random rand = new Random();
+	
+	boolean clickLock = false;
 	
 	GamePanel(){
 		titleFont = new Font("Courier", Font.PLAIN, 48);
@@ -103,6 +106,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		control.setOpaque(true);
 		add(control);
 		
+		addToSequence();
+		
 	}
 	
 	void loadImage(String imageFile) {
@@ -124,7 +129,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		} else if (currentPage == INSTRUCTIONS) {
 			drawInstructionPage(g);
 		} else if (currentPage == GAME) {
-			super.paintComponent(g);
+//			super.paintComponent(g);
 			drawGamePage(g);
 		} else if (currentPage == END) {
 			drawEndGamePage(g);
@@ -174,8 +179,23 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		} else {
 			g.setColor(Color.BLUE);
 			g.fillRect(0, 0, Simon.WIDTH, Simon.HEIGHT);
-		}	
+		}
 		
+		JOptionPane.showMessageDialog(null, "Instructions: \n" + "The premise of Simon is very simple; all it requires is your brain. "
+				+ "You will be shown a pattern of different colored squares (either pink, blue, yellow, or green),\n and it is the player's job "
+				+ "to enter the correct sequence by clicking the differnet colored-buttons in the order that they appeared.\n" + "Every time "
+				+ "you answer correctly, the sequence will add one nuew square to the sequence; you'll keep going until you mess up--the game will "
+				+ "end once that happens.");
+		
+		currentPage = GAME;
+		
+		pink.setVisible(true);
+		blue.setVisible(true);
+		yellow.setVisible(true);
+		green.setVisible(true);
+		control.setVisible(true);
+		
+		repaint();
 	}
 	
 	
@@ -202,6 +222,15 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			g.setColor(Color.BLUE);
 			g.fillRect(0, 0, Simon.WIDTH, Simon.HEIGHT);
 		}
+		
+		g.setFont(titleFont);
+		g.setColor(Color.WHITE);
+		g.drawString("END GAME", Simon.WIDTH/3, Simon.HEIGHT/10);
+		
+		g.setFont(pressEnter);
+		g.setColor(Color.WHITE);
+		g.drawString("Click ENTER to RESTART", Simon.WIDTH/2, Simon.HEIGHT/5);
+		
 	}
 	
 	void makeButtonsInvisible() {
@@ -218,13 +247,15 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		green.setVisible(true);
 	}
 	
-	void createSequence(int num) {
-		for (int i = 0; i < num; i++) {
-			sequence.add(rand.nextInt(4));
-		}
+	void addToSequence() {
+		sequence.add(rand.nextInt(4));
 	}
 	
 	void displaySquare(int i) {
+		if (i >= sequence.size()) {
+			System.out.println("display square error");
+			return;
+		} 
 		makeButtonsInvisible();
 		if(sequence.get(i) == 0) {
 			pink.setVisible(true);
@@ -232,10 +263,8 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			blue.setVisible(true);
 		} else if (sequence.get(i) == 2) {
 			yellow.setVisible(true);
-			//sequence.add(2);
 		} else if (sequence.get(i) == 3) {
 			green.setVisible(true);
-			//sequence.add(3);
 		}
 		
 		sequenceIndex++; 
@@ -243,25 +272,15 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		
 	}
 	
-	boolean checkIfCorrect() {
-		return true;
-	}
-	
 	boolean pause = true;
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		System.out.println("it's working");
-		
 		if (sequenceIndex == sequence.size()) {
 			betweenButtons.stop();
 			sequenceIndex = 0;
 			makeButtonsVisible();
-			numInSequence++;
 			control.setText("Your turn!");
-//			for (int i = 0; i < sequence.size(); i++) {
-//				System.out.println(sequence.get(i));
-//			}
 		} else {
 			if (pause) {
 				makeButtonsInvisible();
@@ -297,12 +316,20 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 				
 				repaint();
 			}
+			if (currentPage == END) {
+				currentPage = START;
+				
+				repaint();
+			}
 		}
 		if (e.getKeyCode()==KeyEvent.VK_SPACE) {
 			if (currentPage == START) {
 				currentPage = INSTRUCTIONS;
+				
+				repaint();
 			}
 		}
+		
 	}
 
 	@Override
@@ -315,49 +342,57 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
-		if (e.getSource() == control){
-			if (control.getText().equals("Ready to play?")) {
-				control.setText("...playing");
-				createSequence(numInSequence);
-				betweenButtons.start();
-			} 
-		} 
-		
-		// for some reason it still allows me to click buttons, but doesn't appear to add anything to the list
-		boolean isCorrect = true;
-		if (e.getSource() == pink) {
-			isCorrect = segment.userInput(0);
-			System.out.println("pink");
-		} else if (e.getSource() == blue) {
-			isCorrect = segment.userInput(1);
-			System.out.println("blue");
-		} else if (e.getSource() == yellow) {
-			isCorrect = segment.userInput(2);				
-			System.out.println("yellow");
-		} else if (e.getSource() == green) {
-			isCorrect = segment.userInput(3);
-			System.out.println("green");
-		}
-			
-		if(!isCorrect) {
-			control.setText("You f*cked up");
-			sequence.clear();
-		} else {
-			numCorrect.add(isCorrect);
-		}
 		
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+		if (!clickLock) {
+			JLabel clicked = (JLabel) e.getSource();
+			boolean isCorrect = true;
+			
+			if (clicked == control){
+				if (control.getText().equals("Ready to play?")) {
+					control.setText("...playing");
+					betweenButtons.start();
+				}
+			}  else if (clicked == pink) {
+				isCorrect = segment.userInput(0);
+				System.out.println("pink");
+			} else if (clicked == blue) {
+				isCorrect = segment.userInput(1);
+				System.out.println("blue");
+			} else if (clicked == yellow) {
+				isCorrect = segment.userInput(2);				
+				System.out.println("yellow");
+			} else if (clicked == green) {
+				isCorrect = segment.userInput(3);
+				System.out.println("green");
+			}
+				
+			if(!isCorrect) {
+				makeButtonsInvisible();
+				control.setVisible(false);
+				currentPage = END;
+				
+				repaint();
+			} else {
+				if (sequence.size() == segment.getUserSequence().size()) {
+					addToSequence();
+					segment.resetUserSequence();
+					control.setText("Ready to play?");
+				}
+			}
+			
+			clickLock = true;
+		}
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+		clickLock = false;
 	}
 
 	@Override
