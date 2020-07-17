@@ -36,7 +36,6 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 	
 	int currentPage = START;
 	int sequenceIndex = 0;
-	int buttonclicked;
 	int numRounds = 0;
 	
 	Timer betweenButtons = new Timer(500, this);
@@ -228,11 +227,22 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 		
 		g.setFont(pressEnter);
 		g.setColor(Color.WHITE);
-		g.drawString("You passed: " + numRounds + " rounds", Simon.WIDTH/2, Simon.HEIGHT/5);
+		String word = "";
+		if (numRounds == 1) {
+			word = "round";
+		} else {
+			word = "rounds";
+		}
+		g.drawString("You passed: " + numRounds + " " + word, Simon.WIDTH/2, Simon.HEIGHT/5);
 		
 		g.setFont(pressEnter);
 		g.setColor(Color.WHITE);
 		g.drawString("Press ENTER to RESTART", Simon.WIDTH/2, Simon.HEIGHT/5 + 25);
+		
+		numRounds = 0;
+		sequence.clear();
+		segment.resetUserSequence();
+		addToSequence();
 		
 	}
 	
@@ -317,11 +327,12 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 				green.setVisible(true);
 				control.setVisible(true);
 				
+				control.setText("Ready to play?");
+				
 				repaint();
 			}
 			if (currentPage == END) {
 				currentPage = START;
-				
 				repaint();
 			}
 		}
@@ -356,6 +367,7 @@ public class GamePanel extends JPanel implements ActionListener, MouseListener, 
 			boolean isCorrect = true;
 			
 			if (clicked == control){
+				System.out.println("works");
 				if (control.getText().equals("Ready to play?")) {
 					control.setText("...playing");
 					betweenButtons.start();
